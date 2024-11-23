@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @NoArgsConstructor
 @Getter
@@ -45,7 +44,7 @@ public class Estudante {
 
     public Estudante(String nomeCompleto, LocalDate dataDeNascimento, String genero,
                      String numDocumento, String email, String telefone,
-                     LocalDate dataDeAdmissao, /*Localidade localTrabalho, Localidade localResidencia,*/  List<Desporto>  desportos) {
+                     LocalDate dataDeAdmissao, Localidade localTrabalho, Localidade localResidencia, List<Desporto> desportos) {
         this.nomeCompleto = nomeCompleto;
         this.dataDeNascimento = dataDeNascimento;
         this.genero = genero;
@@ -53,8 +52,8 @@ public class Estudante {
         this.email = email;
         this.telefone = telefone;
         this.dataDeAdmissao = dataDeAdmissao;
-        /*this.localTrabalho = localTrabalho;
-        this.localResidencia = localResidencia;*/
+        this.localTrabalho = localTrabalho;
+        this.localResidencia = localResidencia;
         this.desportosPracticados = desportos;
     }
 }

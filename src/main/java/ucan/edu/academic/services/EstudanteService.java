@@ -48,12 +48,6 @@ public class EstudanteService {
             return;
         }
 
-        // Buscar algumas localidades pré-existentes para associar aos estudantes
-        List<Localidade> localidades = localidadeRepository.findAll();
-        if (localidades.isEmpty()) {
-            throw new IllegalStateException("Nenhuma localidade cadastrada. Inicialize localidades primeiro.");
-        }
-
         List<Estudante> estudantes = new ArrayList<>();
 
         for (int i = 0; i < 100; i++) {
@@ -62,8 +56,8 @@ public class EstudanteService {
             LocalDate dataNascimento = DataUtils.escolherAleatoriamenteDataNascimento(20, 60);
 
             // Escolher localidades aleatórias para trabalho e residência
-            //Localidade localTrabalho = localidadeService.escolherAleatoriamenteLocalidadeAngolana();
-            //Localidade localResidencia = localidadeService.escolherAleatoriamenteLocalidadeAngolana();
+            Localidade localTrabalho = localidadeService.escolherAleatoriamenteLocalidadeAngolana();
+            Localidade localResidencia = localidadeService.escolherAleatoriamenteLocalidadeAngolana();
 
             // Selecionar esportes aleatórios (1-3 esportes diferentes por estudante)
             List<Desporto> desportos = new ArrayList<>();
@@ -88,11 +82,8 @@ public class EstudanteService {
                     EstudanteUtils.gerarEmail(),
                     EstudanteUtils.gerarTelefone(),
                     EstudanteUtils.gerarDataMatricula(),
-                    /*
                     localTrabalho,
                     localResidencia,
-
-                     */
                     desportos          // Esportes praticados
             );
 
