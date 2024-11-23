@@ -45,9 +45,10 @@ public class EstudanteService {
     public void initializeEstudantes() {
         if (!isInicializacaoNecessaria()) return;
 
-        List<Estudante> estudantes = IntStream.range(0, 100)
-                .mapToObj(i -> gerarEstudanteAleatorio())
-                .collect(Collectors.toList());
+        List<Estudante> estudantes = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            estudantes.add(gerarEstudanteAleatorio());
+        }
 
         estudanteRepository.saveAll(estudantes);
         System.out.println("Estudantes cadastrados com sucesso:\t" +

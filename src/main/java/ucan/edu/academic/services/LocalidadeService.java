@@ -53,7 +53,7 @@ public class LocalidadeService {
                 localidadesAngolanas.add(loc);
         }
         System.out.println("LocalidadeService.criarLocalidadesAngolanas()\tlocalidadesAngolanas: " +
-                ListUtils.toString(localidadesAngolanas, Localidade::toString));
+                ListUtils.toString(localidadesAngolanas, Localidade::getDesignacao));
     }
 
     private boolean forAngolna(Localidade loc )

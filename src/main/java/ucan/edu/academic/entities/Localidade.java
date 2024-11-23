@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Getter
@@ -29,7 +28,9 @@ public class Localidade {
         this.designacao = designacao;
     }
 
+
+    //toString
     public String toString() {
-        return designacao;
+        return this.designacao;
     }
 }

@@ -1,10 +1,13 @@
 package ucan.edu.academic.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import ucan.edu.academic.enums.StatusMatricula;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "matricula_disciplina")
 public class MatriculaDisciplina {
