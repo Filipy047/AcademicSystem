@@ -1,0 +1,392 @@
+Entidades
+    1. Estudante (Independente)
+    2. Curso (Independente)
+    3. Disciplina (auto-relacionada)
+    4. Matricula (curso-aluno-disciplina)
+    5. PlanoCurso(ref. Curso, ref. Disciplina, semestre)
+
+_______Entidades e Atributos_______
+    1. Estudante
+        • ID_Estudante (int): Identificador único do estudante
+        • Nome_Completo (string): Nome completo do estudante
+        • Data_de_Nascimento (date): Data de nascimento do estudante
+        • Gênero (string): Gênero do estudante (M/F)
+        • BilheteIdentidade (string): Número do CPF do estudante (ou outro documento)
+        • Email (string): Endereço de e-mail do estudante
+        • Telefone (string): Número de contato do estudante
+        • Endereço (string): Endereço residencial do estudante
+        • Data_de_Admissão (date): Data em que o estudante foi admitido na instituição
+        • local_de_trabalho (string): Local de trabalho do estudante
+
+    
+    2. Curso
+        • ID_Curso (int): Identificador único do curso
+        • Nome_Curso (string): Nome do curso (ex.: Engenharia de Software)
+        • Descrição (string): Descrição breve do curso
+        • Duração (int): Duração do curso em anos
+        • Carga_Horária_Total (int): Carga horária total do curso em horas
+        • Grau_Acadêmico (string): Grau acadêmico conferido pelo curso (ex.: Bacharelado, Licenciatura)
+
+    
+    3. Disciplina
+        • ID_Disciplina (int): Identificador único da disciplina
+        • Nome_Disciplina (string): Nome da disciplina (ex.: Algoritmos e Estruturas de Dados)
+        • Código_Disciplina (string): Código único da disciplina (ex.: INF101)
+        • Créditos (int): Número de créditos atribuídos à disciplina
+        • Carga_Horária (int): Carga horária da disciplina em horas
+        • Pré_Requisitos (array[int]): Lista de disciplinas pré-requisito (referencia IDs de outras disciplinas)
+
+    4. Matrícula
+        • PK_Matrícula (int): Identificador único da matrícula
+        • FK_Estudante (int): Identificador do estudante matriculado
+        • FK_Disciplina (int): Identificador da disciplina matriculada
+        • Data_Matrícula (date): Data em que o estudante se matriculou na disciplina
+        • Nota_Final (float): Nota final obtida pelo estudante na disciplina
+        • Status_Matrícula (string): Status da matrícula (Em Curso, Aprovado, Reprovado)
+
+    5. PlanoCurso
+        • PK_PlanoCurso (int): Identificador único do plano de curso
+        • FK_Curso (int): Identificador do curso associado ao plano de curso
+        • FK_Disciplina (int): Identificador da disciplina associada ao plano de curso
+        • Semestre (int): Semestre ao qual a disciplina pertence ao plano de curso
+
+    6. Localidade
+        • ID_Localidade (int): Identificador único da localidade
+        • Designação (string): Nome da localidade ou designação
+        • Fk_Localidade (int): Identificador da localidade pai (se houver)
+
+_______Relacionamentos e Cardinalidades_______
+
+    1. Curso - Curso_Disciplina:
+        • Um Curso pode ter várias disciplinas (representado pela entidade Curso_Disciplina), mas cada entrada em       Curso_Disciplina refere-se a apenas um Curso.
+        • Cardinalidade: Curso 1:N Curso_Disciplina
+    
+    2. Disciplina - Curso_Disciplina:
+        • Uma Disciplina pode ser oferecida em vários cursos e semestres, mas cada entrada em Curso_Disciplina refere-se a apenas uma Disciplina.
+        • Cardinalidade: Disciplina 1:N Curso_Disciplina
+
+    3. Curso_Disciplina - (Relacionamento entre Curso e Disciplina)
+        • A entidade Curso_Disciplina permite uma relação N entre Curso e Disciplina, pois uma disciplina pode pertencer a vários cursos e ser oferecida em diferentes semestres, e um curso pode ter várias disciplinas.
+        • Cardinalidade: Curso N:N Disciplina (através de Curso_Disciplina)
+
+    6. Matrícula - Estudante:
+        • Um Estudante pode ter várias Matrículas (em diferentes disciplinas), mas cada Matrícula está associada a apenas um Estudante.
+        • Cardinalidade: Estudante 1:N Matrícula
+
+    7. Matrícula - Disciplina:
+        • Uma Disciplina pode ter vários estudantes matriculados, mas cada Matrícula refere-se a apenas uma Disciplina.
+        • Cardinalidade: Disciplina 1:N Matrícula
+
+
+_______Requisitos Funcionais (R.F)_______
+
+Gerenciar Cursos:
+
+1. Cadastrar um novo curso
+    • Editar informações de um curso existente
+    • Excluir um curso
+    • Listar todos os cursos cadastrados
+
+2. Gerenciar Disciplinas:
+    • Cadastrar uma nova disciplina
+    • Editar informações de uma disciplina existente
+    • Excluir uma disciplina
+    • Listar todas as disciplinas cadastradas
+    • Definir pré-requisitos entre as disciplinas
+
+
+3. Gerenciar Matrículas:
+    • Realizar a matrícula de um estudante em um curso
+    • Verificar se o estudante já está matriculado no curso
+    • Listar todas as matrículas realizadas
+
+
+4. Gerenciar Disciplinas Matriculadas:
+    • Matricular um estudante em uma disciplina
+    • Verificar se o estudante já está matriculado na disciplina
+    • Verificar se o estudante possui disciplinas pendentes de períodos anteriores
+    • Verificar se o estudante atende aos pré-requisitos da disciplina
+    • Atualizar a nota do estudante em uma disciplina
+
+_______Requisitos Não Funcionais (R.N.F)_______
+1. Consultas:
+    • Consultar as disciplinas concluídas por um estudante
+    • Consultar as disciplinas cursadas e o ano pelo estudante
+    • Gerar um histórico do curso do estudante
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+faça regras de precendecias para cada disciplina, lançamentos de notas e etc...
+permite matricula && lançamentos de notas
+as disciplinas feitas pelo aluno
+gerir regime de precedencias
+
+consultas (estudantes matriculados)
+Só notas finais por disciplina
+
+fazer uma documentação dos requisitos
+escalibidade (requsito não funcional mais importante)
+
+
+___version 1___
+{
+    "matricula": {
+        "pkMatricula": 1
+    },
+    "disciplina": {
+        "pkDisciplina": 1
+    },
+    "semestre": 1
+}
+
+
+
+
+
+
+
+
+
+1. Student Management
+- Create, read, update, and delete student records
+- Initialize default student records
+- Validate student data (e.g., name, birth date)
+
+2. Course Management
+- Create and manage course offerings
+- Initialize default course records
+- Define course details like academic degree, duration, total workload
+
+3. Discipline (Subject) Management
+- Create, read, update, and delete disciplines
+- Define discipline details like name, code, credits, workload
+- Establish pre-requisite relationships between disciplines
+
+4. Course Curriculum Planning
+- Create course curriculum plans
+- Map disciplines to specific semesters
+- Define discipline sequences and pre-requisites
+- Generate comprehensive course curriculum details
+
+5. Student Enrollment
+- Enroll students in courses
+- Validate enrollment conditions:
+  * Check if student is already enrolled in a course
+  * Verify course and student existence
+  * Ensure student meets pre-requisite requirements
+  * Prevent duplicate enrollments
+  * Check for pending disciplines from previous semesters
+
+6. Discipline Enrollment
+- Enroll students in specific disciplines
+- Validate enrollment conditions:
+  * Check if discipline is part of student's course curriculum
+  * Verify pre-requisite completion
+  * Prevent duplicate enrollments
+  * Check for pending disciplines
+
+7. Academic Record Tracking
+- Record student performance
+- Update discipline grades
+- Track enrollment status (in progress, approved, etc.)
+
+8. Student Academic History Services
+- Generate student academic transcripts
+- List completed and ongoing disciplines
+- Provide detailed academic history reports
+
+The system supports a comprehensive academic management workflow from student registration through course and discipline enrollment to academic record maintenance.
+
+
+
+Aqui está uma explicação clara das diferenças:
+
+spring.jpa.hibernate.ddl-auto=update:
+
+Preserva os dados existentes no banco de dados
+Modifica o esquema da tabela se necessário
+Adiciona novas colunas ou tabelas
+NÃO deleta dados existentes nem remove tabelas
+spring.jpa.hibernate.ddl-auto=create:
+
+REMOVE todas as tabelas existentes toda vez que a aplicação é iniciada
+Cria novas tabelas do zero
+DELETA todos os dados existentes
+Redefine todo o banco de dados para seu estado inicial
+Em resumo, create vai apagar completamente seu banco de dados e recriá-lo toda vez que você iniciar a aplicação, enquanto update preserva cuidadosamente seus dados e apenas faz as modificações de esquema necessárias.
+
+Recomendação:
+
+Durante o desenvolvimento: Use create
+Em produção: Use update ou validate
+
+
+Tarefa
+. Introduzir a tabela localidade e atributos (pklocalidade, designação, fk_localidade)
+. Introduzir na tabela estudante a coluna local_trabalho e residencia
+. Implementar o cashes em todas as tabelas primarias (localidade, curso, disciplina,planoDeCurso)
+
+   private HashMap<Integer, Localidade> localidadesMap = new HashMap<>();
+
+  //inicialize hashmap
+    public void initializeHashMap() {
+        List<Localidade> localidades = this.localidadeRepository.findAll();
+        for (Localidade localidade : localidades) {
+            this.localidadesMap.put(localidade.getPkLocalidade(), localidade);
+        }
+    }
+
+
+
+
+@Service
+public class LocalidadeService {
+
+    private final LocalidadeRepository localidadeRepository;
+
+    public final String INDEFINIDO = "Indefinido";
+    public final String INDEFINIDA = "Indefinida";
+    @Getter
+    private boolean initialized = false;
+
+    @Autowired
+    public LocalidadeService(LocalidadeRepository localidadeRepository) {
+        this.localidadeRepository = localidadeRepository;
+    }
+
+    @Async
+    public void initializeAsync() {
+        if (localidadeRepository.count() > 0) {
+            System.out.println("Já existem localidades cadastradas.");
+            initialized = true;
+            return;
+        }
+
+        List<Sitio> sitios = createSitiosList();
+        saveAll(sitios);
+        System.out.println("Localidades base cadastradas com sucesso.");
+        initialized = true;
+    }
+
+    @Cacheable("continentes")
+    public List<Localidade> buscarContinentes() {
+        List<Localidade> continentes = localidadeRepository.findByFkLocalidadePaiIsNull();
+        return ordenarComIndefinidoNoFinal(continentes);
+    }
+
+    @Cacheable("paises")
+    public List<Localidade> findAllPaises() {
+        List<Localidade> continentes = buscarContinentes();
+        List<Localidade> paises = new ArrayList<>();
+
+        for (Localidade continente : continentes) {
+            if (!continente.getDesignacao().equals(INDEFINIDO)) {
+                List<Localidade> paisesDoContinente = localidadeRepository
+                        .findByFkLocalidadePai_PkLocalidade(continente.getPkLocalidade());
+                paises.addAll(paisesDoContinente);
+            }
+        }
+
+        return ordenarComIndefinidoNoFinal(paises);
+    }
+
+    @Cacheable(value = "filhosByCodigoPai", key = "#codigoPai")
+    public List<Localidade> findFilhosbyCodigoPai(int codigoPai) {
+        List<Localidade> filhos = localidadeRepository.findByFkLocalidadePai_PkLocalidade(codigoPai);
+        return ordenarComIndefinidoNoFinal(filhos);
+    }
+
+    @Cacheable(value = "filhosByAvoAndPai", key = "{#nomePai, #nomeAvo}")
+    public List<Localidade> findFilhosbyAvoAndPai(String nomePai, String nomeAvo) {
+        List<Localidade> filhos = localidadeRepository.findAllFilhosbyavoAndPai(nomePai, nomeAvo);
+        return ordenarComIndefinidoNoFinal(filhos);
+    }
+
+    @CacheEvict(value = {"continentes", "paises", "filhosByCodigoPai", "filhosByAvoAndPai"}, allEntries = true)
+    public void limparCache() {
+        System.out.println("Cache de localidades limpo com sucesso.");
+    }
+
+    private List<Localidade> ordenarComIndefinidoNoFinal(List<Localidade> localidades) {
+        if (localidades == null || localidades.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<Localidade> resultado = new ArrayList<>();
+        List<Localidade> indefinidos = new ArrayList<>();
+
+        for (Localidade localidade : localidades) {
+            if (localidade.getDesignacao().equals(INDEFINIDO) || localidade.getDesignacao().equals(INDEFINIDA)) {
+                indefinidos.add(localidade);
+            } else {
+                resultado.add(localidade);
+            }
+        }
+
+        // Ordena os elementos não-indefinidos alfabeticamente
+        resultado.sort(Comparator.comparing(Localidade::getDesignacao));
+        // Adiciona os indefinidos no final
+        resultado.addAll(indefinidos);
+
+        return resultado;
+    }
+}
+
+@Configuration
+@EnableCaching
+public class CacheConfig {
+}
+
+spring.cache.type=simple
+
+
+Para implementar o cache semelhante ao que você provavelmente já fez na CursoService, você pode usar a anotação @Cacheable ou @CacheEvict do Spring Cache nas operações de leitura ou escrita que lidam com entidades frequentemente acessadas.
+
+Abaixo está uma versão modificada da LocalidadeService com a implementação de cache:
+
+Passos para adicionar cache:
+Configurar o cache no seu projeto: Certifique-se de que o cache esteja configurado no projeto, geralmente no arquivo application.properties
+
+
+
+Explicação das Modificações
+@Cacheable:
+
+Os métodos buscarContinentes, findAllPaises, findFilhosbyCodigoPai, e findFilhosbyAvoAndPai agora armazenam seus resultados em cache.
+O valor do cache (e.g., continentes, paises, etc.) identifica os dados armazenados.
+@CacheEvict:
+
+O método limparCache remove todas as entradas do cache sempre que for chamado. Isso é útil para garantir que o cache seja atualizado após alterações relevantes nos dados.
+key:
+
+Especificamos uma chave única para cachear os resultados de métodos parametrizados, como findFilhosbyCodigoPai e findFilhosbyAvoAndPai.
+Considerações
+Validação do Cache: Configure corretamente um sistema de cache apropriado para sua aplicação em produção, como Redis ou EhCache, para melhor performance.
+Evitar dados obsoletos: Use @CacheEvict em operações de escrita para evitar inconsistências no cache.

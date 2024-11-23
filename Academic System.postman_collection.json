@@ -1,0 +1,295 @@
+{
+	"info": {
+		"_postman_id": "7e57fd54-6aab-4d2f-add6-387aacb44b20",
+		"name": "Academic System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37323132"
+	},
+	"item": [
+		{
+			"name": "Estudante",
+			"item": [
+				{
+					"name": "getAllStudents",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/estudantes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"estudantes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "saveStudent",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nomeCompleto\": \"João de Deus\",\n    \"dataDeNascimento\": \"2000-05-15\",\n    \"genero\": \"Masculino\",\n    \"numDocumento\": \"006162616LA046\",\n    \"email\": \"joao.deus@email.com\",\n    \"telefone\": \"987654321\",\n    \"endereco\": \"Rua A, 123\",\n    \"dataDeAdmissao\": \"2024-01-10\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/estudantes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"estudantes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteStudente",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/estudantes/delete/[id]",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"estudantes",
+								"delete",
+								"[id]"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Matricula-Curso",
+			"item": [
+				{
+					"name": "matricular-aluno-curso",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"estudante\": {\n        \"pkIdEstudante\": id\n    },\n    \"curso\": {\n        \"id\": id\n    },\n    \"dataMatricula\": \"2020-02-01\",\n    \"anoLetivo\": 2024,\n    \"semestre\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/matriculas",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"matriculas"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Matricula-Disciplina",
+			"item": [
+				{
+					"name": "matricular-aluno-disciplina",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"matricula\": {\n        \"pkMatricula\": 1 \n    },\n    \"disciplina\": {\n        \"pkDisciplina\": 1\n    },\n    \"semestre\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/matriculas-disciplinas",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"matriculas-disciplinas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "lançar nota",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "15",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/matriculas-disciplinas/5/nota",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"matriculas-disciplinas",
+								"5",
+								"nota"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "historico",
+			"item": [
+				{
+					"name": "getHistoricoAluno",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/consultas/historico-curso/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"consultas",
+								"historico-curso",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disciplinas Concluidas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/consultas/disciplinas-concluidas/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"consultas",
+								"disciplinas-concluidas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disciplina Cursadas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/consultas/disciplinas-cursadas/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"consultas",
+								"disciplinas-cursadas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Plano de Curso",
+			"item": [
+				{
+					"name": "get plano-curso | cursoId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/plano-curso/curso/1/detalhado",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"plano-curso",
+								"curso",
+								"1",
+								"detalhado"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080/api/",
+			"type": "string"
+		}
+	]
+}
