@@ -6,12 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ucan.edu.academic.dto.EstudanteDesportoDTO;
 import ucan.edu.academic.dto.EstudantesLocalidadeDTO;
-import ucan.edu.academic.entities.Desporto;
 import ucan.edu.academic.entities.Estudante;
 import ucan.edu.academic.services.EstudanteService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/estudantes")
@@ -24,7 +22,7 @@ public class EstudanteController {
     @PostMapping
     public ResponseEntity<Estudante> criarEstudante(@RequestBody Estudante estudante) {
         try {
-            Estudante novoEstudante = estudanteService.criarEstudante(estudante);
+            Estudante novoEstudante = estudanteService.createEstudante(estudante);
             return new ResponseEntity<>(novoEstudante, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -42,7 +40,7 @@ public class EstudanteController {
     @GetMapping("/{id}")
     public ResponseEntity<Estudante> obterEstudante(@PathVariable int id) {
         try {
-            Estudante estudante = estudanteService.obterEstudantePorId(id);
+            Estudante estudante = estudanteService.findEstudantebyId(id);
             return new ResponseEntity<>(estudante, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -53,7 +51,7 @@ public class EstudanteController {
     @PutMapping("/{id}")
     public ResponseEntity<Estudante> atualizarEstudante(@PathVariable Integer id, @RequestBody Estudante estudante) {
         try {
-            Estudante estudanteAtualizado = estudanteService.atualizarEstudante(id, estudante);
+            Estudante estudanteAtualizado = estudanteService.updateEstudante(id, estudante);
             return new ResponseEntity<>(estudanteAtualizado, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

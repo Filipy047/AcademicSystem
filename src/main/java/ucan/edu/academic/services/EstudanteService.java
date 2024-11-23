@@ -12,12 +12,12 @@ import ucan.edu.academic.repositories.EstudanteRepository;
 import ucan.edu.academic.repositories.LocalidadeRepository;
 import ucan.edu.academic.utils.DataUtils;
 import ucan.edu.academic.utils.EstudanteUtils;
+import ucan.edu.academic.utils.ListUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -43,72 +43,42 @@ public class EstudanteService {
     }
 
     public void initializeEstudantes() {
-        if (estudanteRepository.count() > 0) {
-            System.out.println("Estudantes já foram inicializados anteriormente.");
-            return;
-        }
+        if (!isInicializacaoNecessaria()) return;
 
-        List<Estudante> estudantes = new ArrayList<>();
+        List<Estudante> estudantes = IntStream.range(0, 100)
+                .mapToObj(i -> gerarEstudanteAleatorio())
+                .collect(Collectors.toList());
 
-        for (int i = 0; i < 100; i++) {
-
-            // Gerar data de nascimento aleatória entre 20 e 60 anos
-            LocalDate dataNascimento = DataUtils.escolherAleatoriamenteDataNascimento(20, 60);
-
-            // Escolher localidades aleatórias para trabalho e residência
-            Localidade localTrabalho = localidadeService.escolherAleatoriamenteLocalidadeAngolana();
-            Localidade localResidencia = localidadeService.escolherAleatoriamenteLocalidadeAngolana();
-
-            // Selecionar esportes aleatórios (1-3 esportes diferentes por estudante)
-            List<Desporto> desportos = new ArrayList<>();
-            int quantidadeEsportes = new Random().nextInt(3) + 1; // 1 a 3 esportes
-
-            for (int j = 0; j < quantidadeEsportes; j++) {
-                Desporto desportoAleatorio;
-
-                do {
-                    desportoAleatorio = desportoService.escolherAleatoriamenteDesporto();
-                } while (desportos.contains(desportoAleatorio)); // Evita duplicatas
-
-                desportos.add(desportoAleatorio);
-            }
-
-            // Criar estudante
-            Estudante estudante = new Estudante(
-                    EstudanteUtils.gerarNome(),
-                    dataNascimento,
-                    EstudanteUtils.gerarGenero(),
-                    EstudanteUtils.gerarNumeroEstudante(),
-                    EstudanteUtils.gerarEmail(),
-                    EstudanteUtils.gerarTelefone(),
-                    EstudanteUtils.gerarDataMatricula(),
-                    localTrabalho,
-                    localResidencia,
-                    desportos          // Esportes praticados
-            );
-
-            estudantes.add(estudante);
-        }
-
-        for (Estudante estudante : estudantes) {
-            saveIfNotExists(estudante);
-        }
-
-        System.out.println("100 estudantes inicializados com sucesso.");
+        estudanteRepository.saveAll(estudantes);
+        System.out.println("Estudantes cadastrados com sucesso:\t" +
+                ListUtils.toString(estudantes, Estudante::getNomeCompleto));
     }
 
+    private Estudante gerarEstudanteAleatorio() {
+        return new Estudante(
+                EstudanteUtils.gerarNome(),
+                DataUtils.escolherAleatoriamenteDataNascimento(20, 60),
+                EstudanteUtils.gerarGenero(),
+                EstudanteUtils.gerarNumeroEstudante(),
+                EstudanteUtils.gerarEmail(),
+                EstudanteUtils.gerarTelefone(),
+                EstudanteUtils.gerarDataMatricula(),
+                localidadeService.escolherAleatoriamenteLocalidadeAngolana(),
+                localidadeService.escolherAleatoriamenteLocalidadeAngolana(),
+                desportoService.escolherAleatoriamenteDesporto()
+        );
+    }
 
-    private void saveIfNotExists(Estudante estudante) {
-        if (estudanteRepository.existsByNumDocumento(estudante.getNumDocumento())) {
-            System.out.println("Estudante já existe: " + estudante.getNomeCompleto());
-            return;
+    private boolean isInicializacaoNecessaria() {
+        if (estudanteRepository.count() > 0) {
+            System.out.println("Estudantes já foram inicializados anteriormente.");
+            return false;
         }
-        estudanteRepository.save(estudante);
-        System.out.println("Estudante salvo: " + estudante.getNomeCompleto());
+        return true;
     }
 
     // Criar novo estudante
-    public Estudante criarEstudante(Estudante estudante) {
+    public Estudante createEstudante(Estudante estudante) {
         // Validação simples
         if (estudante == null) {
             throw new IllegalArgumentException("Estudante não pode ser nulo");
@@ -137,13 +107,13 @@ public class EstudanteService {
     }
 
     // Obter estudante por ID
-    public Estudante obterEstudantePorId(int id) {
+    public Estudante findEstudantebyId(int id) {
         Optional<Estudante> estudante = estudanteRepository.findById(id);
         return estudante.orElseThrow(() -> new IllegalArgumentException("Estudante não encontrado"));
     }
 
     // Atualizar estudante
-    public Estudante atualizarEstudante(int id, Estudante estudante) {
+    public Estudante updateEstudante(int id, Estudante estudante) {
         if (!estudanteRepository.existsById(id)) {
             throw new IllegalArgumentException("Estudante não encontrado para atualização");
         }
@@ -171,10 +141,6 @@ public class EstudanteService {
         return null;
     }
 
-    //find estudante by localidade
-    public List<Estudante> findEstudantesByLocalidade(int id) {
-        return estudanteRepository.findEstudanteByLocalResidencia_PkLocalidade(id);
-    }
 
     public EstudantesLocalidadeDTO findEstudantesByLocalResidencia(int pkLocalResidencia) {
         // Buscar a localidade de residência
@@ -233,5 +199,14 @@ public class EstudanteService {
         EstudanteDesportoDTO dto = new EstudanteDesportoDTO(estudante.getPkEstudante(), estudante.getNomeCompleto(), nomesDesportos);
         return dto;
     }
+
+      /*private void saveIfNotExists(Estudante estudante) {
+        if (estudanteRepository.existsByNumDocumento(estudante.getNumDocumento())) {
+            System.out.println("Estudante já existe: " + estudante.getNomeCompleto());
+            return;
+        }
+        estudanteRepository.save(estudante);
+        System.out.println("Estudante salvo: " + estudante.getNomeCompleto());
+    }*/
 
 }
