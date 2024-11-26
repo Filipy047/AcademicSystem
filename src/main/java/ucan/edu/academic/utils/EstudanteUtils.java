@@ -3,10 +3,11 @@ package ucan.edu.academic.utils;
 import com.github.javafaker.Faker;
 
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class EstudanteUtils {
-    private static final Faker faker = new Faker();
+    private static final Faker faker = new Faker(new Locale("pt-BR"));
 
     // Método para gerar número de estudante no padrão 006152516LA042
     public static String gerarNumeroEstudante() {
@@ -17,10 +18,10 @@ public class EstudanteUtils {
         );
     }
 
-    // Método para gerar uma data de nascimento entre 18 e 30 anos atrás
+    // Método para gerar uma data de nascimento entre 20 e 60 anos atrás
     public static LocalDate gerarDataNascimento() {
         return faker.date()
-                .birthday(18, 30)
+                .birthday(20, 60)
                 .toInstant()
                 .atZone(java.time.ZoneId.systemDefault())
                 .toLocalDate();
