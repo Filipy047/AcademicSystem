@@ -3,9 +3,6 @@ package ucan.edu.academic.services;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ucan.edu.academic.entities.Localidade;
 import ucan.edu.academic.repositories.LocalidadeRepository;
@@ -18,42 +15,46 @@ import java.util.*;
 public class LocalidadeService {
 
     private final LocalidadeRepository localidadeRepository;
-    private static List<Localidade> localidadesAngolanas = new ArrayList<>();
+    private final HashMap<Integer, Localidade> localidadeByPkLocalidadeCache;
+    private final HashMap<String, Localidade> localidadeByNomeCache;
+    private List<Localidade> localidades;
+    private static final List<Localidade> localidadesAngolanas = new ArrayList<>();
     private static final Random random = new Random();
-
 
     public final String INDEFINIDO = "Indefinido";
     public final String INDEFINIDA = "Indefinida";
+
     @Getter
     private boolean initialized = false;
+
 
     @Autowired
     public LocalidadeService(LocalidadeRepository localidadeRepository) {
         this.localidadeRepository = localidadeRepository;
+        this.localidadeByPkLocalidadeCache = new HashMap<>();
+        this.localidadeByNomeCache = new HashMap<>();
     }
 
+    @PostConstruct
+    public void init() {
+        initializeAsync();
+        initializeCache();
+        criarLocalidadesAngolanas();
+    }
 
     // Additional method to create list of Angolan localities
-    @PostConstruct
-    @CacheEvict(value = "localidadesAngolanas", allEntries = true)
     public void criarLocalidadesAngolanas() {
         if (localidadeRepository.count() == 0) {
             initializeAsync();
         }
 
         List<Localidade> todasLocalidades = localidadeRepository.findAll();
-
-        /*
-            para cada loc de localidades
-                se loc.forAngolna()
-                    adicionar loc em localidadesAngolanas
-         */
         for (Localidade loc : todasLocalidades) {
             if (forAngolna(loc))
                 localidadesAngolanas.add(loc);
         }
         System.out.println("LocalidadeService.criarLocalidadesAngolanas()\tlocalidadesAngolanas: " +
-                ListUtils.toString(localidadesAngolanas, Localidade::getDesignacao));
+                ListUtils.toString(localidadesAngolanas, Localidade::toString));
     }
 
     private boolean forAngolna(Localidade loc )
@@ -68,9 +69,7 @@ public class LocalidadeService {
         return false;
     }
 
-    @Async
-    @CacheEvict(value = {"localidades", "continentes", "paises", "localidadesAngolanas", "filhosPorPai", "filhosPorAvoPai"}, allEntries = true)
-    public void initializeAsync() {
+    private void initializeAsync() {
         if (localidadeRepository.count() > 0) {
             System.out.println("Já existem localidades cadastradas.");
             initialized = true;
@@ -83,6 +82,30 @@ public class LocalidadeService {
         initialized = true;
     }
 
+    private void initializeCache() {
+        localidadeByPkLocalidadeCache.clear();
+        localidadeByNomeCache.clear();
+
+        localidades = localidadeRepository.findAll();
+        sortLocalidadesAlphabetically(localidades);
+
+        for (Localidade localidade : localidades) {
+            localidadeByPkLocalidadeCache.put(localidade.getPkLocalidade(), localidade);
+            localidadeByNomeCache.put(localidade.getDesignacao(), localidade);
+        }
+    }
+
+    private void sortLocalidadesAlphabetically(List<Localidade> localidades) {
+        for (int i = 0; i < localidades.size(); i++) {
+            for (int j = i + 1; j < localidades.size(); j++) {
+                if (localidades.get(i).getDesignacao().compareTo(localidades.get(j).getDesignacao()) > 0) {
+                    Localidade temp = localidades.get(i);
+                    localidades.set(i, localidades.get(j));
+                    localidades.set(j, temp);
+                }
+            }
+        }
+    }
 
     private List<Sitio> createSitiosList() {
         return Arrays.asList(
@@ -191,7 +214,7 @@ public class LocalidadeService {
 
     private void saveAll(List<Sitio> sitios) {
         for (Sitio sitio : sitios) {
-            System.out.println("Saving: " + sitio);
+            System.out.println("Saving:" + sitio);
             Localidade localidade = generateLocalidade(sitio);
             localidadeRepository.save(localidade);
         }
@@ -225,7 +248,6 @@ public class LocalidadeService {
      * @return Localidade aleatória de Angola
      * @throws IllegalStateException se não existirem localidades angolanas
      */
-    @Cacheable(value = "localidadesAngolanas")
     public Localidade escolherAleatoriamenteLocalidadeAngolana() {
         int size = localidadesAngolanas.size();
         int posicao = random.nextInt(size);
@@ -236,7 +258,6 @@ public class LocalidadeService {
     /**
      * Busca todos os filhos de uma localidade pelo código do pai
      */
-    @Cacheable(value = "filhosPorPai", key = "#codigoPai")
     public List<Localidade> findFilhosbyCodigoPai(int codigoPai) {
         List<Localidade> filhos = localidadeRepository.findByFkLocalidadePai_PkLocalidade(codigoPai);
         return ordenarComIndefinidoNoFinal(filhos);
@@ -245,7 +266,6 @@ public class LocalidadeService {
     /**
      * Busca todos os filhos através do avô e do pai
      */
-    @Cacheable(value = "filhosPorAvoPai", key = "#nomePai + '-' + #nomeAvo")
     public List<Localidade> findFilhosbyAvoAndPai(String nomePai, String nomeAvo) {
         List<Localidade> filhos = localidadeRepository.findAllFilhosbyavoAndPai(nomePai, nomeAvo);
         return ordenarComIndefinidoNoFinal(filhos);
@@ -255,7 +275,6 @@ public class LocalidadeService {
     /**
      * Busca todos os continentes
      */
-    @Cacheable(value = "continentes")
     public List<Localidade> buscarContinentes() {
         List<Localidade> continentes = localidadeRepository.findByFkLocalidadePaiIsNull();
         return ordenarComIndefinidoNoFinal(continentes);
@@ -264,7 +283,6 @@ public class LocalidadeService {
     /**
      * Busca todos os países
      */
-    @Cacheable(value = "paises")
     public List<Localidade> findAllPaises() {
         List<Localidade> continentes = buscarContinentes();
         List<Localidade> paises = new ArrayList<>();
@@ -306,4 +324,82 @@ public class LocalidadeService {
 
         return resultado;
     }
+
+    // CRUD Methods
+
+    // Read methods
+    public List<Localidade> findAll() {
+        return localidades; // Already sorted alphabetically
+    }
+
+    public Localidade findById(Integer pkLocalidade) {
+        return localidadeByPkLocalidadeCache.get(pkLocalidade);
+    }
+
+    public Localidade findByNome(String nome) {
+        return localidadeByNomeCache.get(nome);
+    }
+
+    // Create method
+    public Localidade create(Localidade localidade) {
+        Localidade novaLocalidade = localidadeRepository.save(localidade);
+
+        localidadeByPkLocalidadeCache.put(novaLocalidade.getPkLocalidade(), novaLocalidade);
+        localidadeByNomeCache.put(novaLocalidade.getDesignacao(), novaLocalidade);
+        localidades.add(novaLocalidade);
+        sortLocalidadesAlphabetically(localidades);
+
+        System.out.println("Cache atualizado após criação: " + localidadeByPkLocalidadeCache);
+        System.out.println("Lista atualizada: " + localidades);
+
+        return novaLocalidade;
+    }
+
+    // Update method
+    public Localidade update(Localidade localidade) {
+        Localidade localidadeAtualizada = localidadeRepository.save(localidade);
+
+        Localidade localidadeAntiga = localidadeByPkLocalidadeCache.get(localidade.getPkLocalidade());
+        if (localidadeAntiga != null && !localidadeAntiga.getDesignacao().equals(localidadeAtualizada.getDesignacao())) {
+            localidadeByNomeCache.remove(localidadeAntiga.getDesignacao());
+        }
+
+        localidadeByPkLocalidadeCache.put(localidadeAtualizada.getPkLocalidade(), localidadeAtualizada);
+        localidadeByNomeCache.put(localidadeAtualizada.getDesignacao(), localidadeAtualizada);
+
+        for (int i = 0; i < localidades.size(); i++) {
+            if (localidades.get(i).getPkLocalidade() == (localidadeAtualizada.getPkLocalidade())) {
+                localidades.set(i, localidadeAtualizada);
+                break;
+            }
+        }
+        sortLocalidadesAlphabetically(localidades);
+
+        System.out.println("Cache atualizado após atualização: " + localidadeByPkLocalidadeCache);
+        System.out.println("Lista atualizada: " + localidades);
+
+        return localidadeAtualizada;
+    }
+
+    // Delete method
+    public void delete(Integer pkLocalidade) {
+        Localidade localidadeParaRemover = localidadeByPkLocalidadeCache.get(pkLocalidade);
+        localidadeRepository.deleteById(pkLocalidade);
+
+        if (localidadeParaRemover != null) {
+            localidadeByPkLocalidadeCache.remove(pkLocalidade);
+            localidadeByNomeCache.remove(localidadeParaRemover.getDesignacao());
+        }
+
+        for (int i = 0; i < localidades.size(); i++) {
+            if (localidades.get(i).getPkLocalidade() == (pkLocalidade)) {
+                localidades.remove(i);
+                break;
+            }
+        }
+
+        System.out.println("Cache atualizado após exclusão: " + localidadeByPkLocalidadeCache);
+        System.out.println("Lista atualizada: " + localidades);
+    }
+
 }

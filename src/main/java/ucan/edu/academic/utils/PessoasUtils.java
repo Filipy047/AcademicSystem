@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-public class EstudanteUtils {
+public class PessoasUtils {
     private static final Faker faker = new Faker(new Locale("pt-BR"));
 
     // Método para gerar número de estudante no padrão 006152516LA042

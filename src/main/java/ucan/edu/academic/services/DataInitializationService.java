@@ -41,7 +41,7 @@ public class DataInitializationService {
         try {
             cursoService.init();
             disciplinaService.init();
-            localidadeService.initializeAsync();
+            localidadeService.init();
             estudanteService.initializeEstudantes();
         } catch (Exception e) {
             System.err.println("Erro durante inicialização: " + e.getMessage());

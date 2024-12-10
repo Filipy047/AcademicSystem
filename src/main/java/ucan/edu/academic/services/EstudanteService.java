@@ -11,15 +11,13 @@ import ucan.edu.academic.entities.Localidade;
 import ucan.edu.academic.repositories.EstudanteRepository;
 import ucan.edu.academic.repositories.LocalidadeRepository;
 import ucan.edu.academic.utils.DataUtils;
-import ucan.edu.academic.utils.EstudanteUtils;
+import ucan.edu.academic.utils.PessoasUtils;
 import ucan.edu.academic.utils.ListUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 public class EstudanteService {
@@ -57,13 +55,13 @@ public class EstudanteService {
 
     private Estudante gerarEstudanteAleatorio() {
         return new Estudante(
-                EstudanteUtils.gerarNome(),
+                PessoasUtils.gerarNome(),
                 DataUtils.escolherAleatoriamenteDataNascimento(20, 60),
-                EstudanteUtils.gerarGenero(),
-                EstudanteUtils.gerarNumeroEstudante(),
-                EstudanteUtils.gerarEmail(),
-                EstudanteUtils.gerarTelefone(),
-                EstudanteUtils.gerarDataMatricula(),
+                PessoasUtils.gerarGenero(),
+                PessoasUtils.gerarNumeroEstudante(),
+                PessoasUtils.gerarEmail(),
+                PessoasUtils.gerarTelefone(),
+                PessoasUtils.gerarDataMatricula(),
                 localidadeService.escolherAleatoriamenteLocalidadeAngolana(),
                 localidadeService.escolherAleatoriamenteLocalidadeAngolana(),
                 desportoService.escolherAleatoriamenteDesporto()
